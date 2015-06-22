@@ -6,7 +6,8 @@
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [org.clojure/clojurescript "0.0-2760"]
                  [org.omcljs/om "0.8.8"]
-                 [om-utils "0.4.0"]]
+                 [om-utils "0.4.0"]
+                 [org.clojure/tools.logging "0.3.1"]]
   :plugins [[lein-cljsbuild "1.0.6"]]
   :source-paths ["server"]
   :cljsbuild {:builds [{:id           "dev"
