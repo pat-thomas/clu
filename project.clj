@@ -7,12 +7,14 @@
                  [org.clojure/clojurescript "0.0-2760"]
                  [org.omcljs/om "0.8.8"]
                  [om-utils "0.4.0"]
-                 [org.clojure/tools.logging "0.3.1"]]
+                 [org.clojure/tools.logging "0.3.1"]
+                 [http-kit "2.1.18"]
+                 [org.clojure/data.json "0.2.6"]]
   :plugins [[lein-cljsbuild "1.0.6"]]
   :source-paths ["server"]
   :cljsbuild {:builds [{:id           "dev"
                         :source-paths ["src/clu/gui"]
-                        :compiler     {:output-to     "out/clu.js"
-                                       :output-dir    "out"
+                        :compiler     {:output-to     "public/out/clu.js"
+                                       :output-dir    "public/out"
                                        :optimizations :none
                                        :source-map    true}}]})
