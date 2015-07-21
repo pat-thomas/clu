@@ -14,7 +14,6 @@
                  [overtone "0.9.1"]
                  [clojurewerkz/quartzite "2.0.0"]]
   :plugins [[lein-cljsbuild "1.0.6"]]
-  :source-paths ["src/clu/server"]
   :cljsbuild {:builds [{:id           "dev"
                         :source-paths ["src/clu/gui"]
                         :compiler     {:output-to     "public/out/clu.js"
