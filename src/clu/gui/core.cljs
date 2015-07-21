@@ -6,13 +6,25 @@
 
 (def app-state (atom {}))
 
+(defcomponent cell
+  [click-handler]
+  (render
+   (dom/button
+    #js {:className "button"
+         :onClick   click-handler})))
+
 (defcomponent app
   [websocket]
   (render
-   (dom/button
-    #js {:onClick (fn [e]
-                    (ws/send-to-websocket websocket {:msg "foof"}))}
-    "click here")))
+   (apply
+    dom/div
+    (for [x (range 8)]
+      (apply
+       dom/div
+       (for [y (range 8)]
+         (om/build cell data {:opts {:click-handler (fn [_]
+                                                      (ws/send-to-websocket websocket {:x x
+                                                                                       :y y}))}})))))))
 
 (defn main
   []
