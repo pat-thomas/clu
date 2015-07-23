@@ -5,8 +5,7 @@
   (.stringify (.-JSON js/window) (clj->js m)))
 
 (defn socket-callback
-  [{:strs [msg data]}]
-  (println "msg:" msg)
+  [data]
   (println "data:" data))
 
 (defn initialize-websocket
@@ -19,9 +18,7 @@
          ["onerror" (fn [e]
                       (println "ERROR:" e))]
          ["onmessage" (fn [msg]
-                        (let [data (.-data msg)
-                              d    (js->clj (.parse (.-JSON js/window) data))]
-                          (socket-callback d)))]])))
+                        (socket-callback (js->clj (.parse (.-JSON js/window) (.-data msg)))))]])))
 
 (defn send-to-websocket
   [ws-atom msg]

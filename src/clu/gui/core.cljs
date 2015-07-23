@@ -18,10 +18,10 @@
   (render
    (apply
     dom/div
-    (for [x (range 8)]
+    (for [y (range 8)]
       (apply
        dom/div
-       (for [y (range 8)]
+       (for [x (range 8)]
          (om/build cell data {:opts {:click-handler (fn [_]
                                                       (ws/send-to-websocket websocket {:x x
                                                                                        :y y}))}})))))))

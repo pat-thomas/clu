@@ -18,17 +18,11 @@
                              (log/infof "Channel closed: %s" status)))
     (http/on-receive channel (fn [data] ;; echo it back
                                (let [parsed-data (json/read-str data :key-fn keyword)]
-                                 (do
-                                   (log/infof "received data: %s" parsed-data)
-                                   (http/send! channel (json/write-str parsed-data))))))
-    (loop [id 0]
-      (when (< id 10)
-        (do
-          (timer/schedule-task (* id 200)
-                               (send-msg channel {:msg  (format "message from server: %s" id)
-                                                  :data {}}))
-          (recur (inc id)))))
-    (timer/schedule-task 10000 (http/close channel))))
+                                 (log/infof "received data: %s" parsed-data)
+                                 (->> parsed-data
+                                      sounds/handle-message
+                                      json/write-str
+                                      (http/send! channel)))))))
 
 (defn main
   []
