@@ -16,7 +16,7 @@
   (http/with-channel request channel
     (http/on-close channel (fn [status]
                              (log/infof "Channel closed: %s" status)))
-    (http/on-receive channel (fn [data] ;; echo it back
+    (http/on-receive channel (fn [data]
                                (let [parsed-data (json/read-str data :key-fn keyword)]
                                  (log/infof "received data: %s" parsed-data)
                                  (->> parsed-data
