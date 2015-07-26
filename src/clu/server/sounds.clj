@@ -1,15 +1,34 @@
 (ns clu.server.sounds
-  (:require [overtone.live :as o]))
+  (:require [clojure.core.async :as async :refer [chan go timeout <! >! <!! >!!]]
+            [overtone.live      :as o]))
+
+(def msg-queue (chan 32))
+
+(defn basic-handler
+  [x y]
+  (println "hey hey hey")
+  {:data {:x x
+          :y y}})
 
 (def dispatch
-  {[1 1] (fn [x y]
-           {:data {:x x
-                   :y y}})})
+  {[1 1] #'basic-handler})
+
+(defn listen!
+  []
+  (do
+    (async/go-loop []
+      (let [{:keys [x y] :as msg} (<! msg-queue)]
+        (when-let [handler-fn (get dispatch [x y])]
+          (handler-fn x y)))
+      (recur))
+    :ok))
 
 (defn handle-message
-  [{:keys [x y]}]
-  (when-let [handler-fn (get dispatch [x y])]
-    (handler-fn x y)))
+  [{:keys [x y] :as params}]
+  (def params params)
+  (go
+    (>! msg-queue {:x x
+                   :y y})))
 
 (o/definst bell
   [freq 440]

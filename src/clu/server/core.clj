@@ -18,15 +18,17 @@
                              (log/infof "Channel closed: %s" status)))
     (http/on-receive channel (fn [data]
                                (let [parsed-data (json/read-str data :key-fn keyword)]
-                                 (log/infof "received data: %s" parsed-data)
-                                 (->> parsed-data
-                                      sounds/handle-message
-                                      json/write-str
-                                      (http/send! channel)))))))
+                                 (do
+                                   (log/infof "received data: %s" parsed-data)
+                                   (sounds/handle-message parsed-data)
+                                   (http/send! channel (json/write-str parsed-data))))))))
 
 (defn main
   []
-  (http/run-server #'handler {:port 9090}))
+  (do
+    (sounds/listen!)
+    (http/run-server #'handler {:port 9090})
+    :started))
 
 (comment
   (main)
