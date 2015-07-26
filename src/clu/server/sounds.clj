@@ -4,31 +4,33 @@
 
 (def msg-queue (chan 32))
 
-(defn basic-handler
-  [x y]
-  (println "hey hey hey")
-  {:data {:x x
-          :y y}})
-
-(def dispatch
-  {[1 1] #'basic-handler})
+(def dispatch (atom {}))
 
 (defn listen!
   []
   (do
     (async/go-loop []
       (let [{:keys [x y] :as msg} (<! msg-queue)]
-        (when-let [handler-fn (get dispatch [x y])]
+        (when-let [handler-fn (-> dispatch deref (get [x y]))]
           (handler-fn x y)))
       (recur))
     :ok))
 
 (defn handle-message
   [{:keys [x y] :as params}]
-  (def params params)
   (go
     (>! msg-queue {:x x
                    :y y})))
+
+(defmacro register
+  [x y & handler-fn]
+  `(swap! dispatch assoc [~x ~y] (fn [~'x ~'y]
+                                   ~@handler-fn)))
+
+(register
+ 1 1
+ {:data {:x x
+         :y y}})
 
 (o/definst bell
   [freq 440]
