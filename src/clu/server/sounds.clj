@@ -6,6 +6,11 @@
 
 (def dispatch (atom {}))
 
+(defmacro register
+  [x y & handler-fn]
+  `(swap! dispatch assoc [~x ~y] (fn [~'x ~'y]
+                                   ~@handler-fn)))
+
 (defn listen!
   []
   (do
@@ -21,11 +26,6 @@
   (go
     (>! msg-queue {:x x
                    :y y})))
-
-(defmacro register
-  [x y & handler-fn]
-  `(swap! dispatch assoc [~x ~y] (fn [~'x ~'y]
-                                   ~@handler-fn)))
 
 (register
  1 1
