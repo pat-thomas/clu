@@ -15,6 +15,7 @@
                  [clojurewerkz/quartzite    "2.0.0"]
                  [org.clojure/core.async    "0.1.346.0-17112a-alpha"]]
   :plugins [[lein-cljsbuild "1.0.6"]]
+  :jvm-opts ^:replace [] 
   :cljsbuild {:builds [{:id           "dev"
                         :source-paths ["src/clu/gui"]
                         :compiler     {:output-to     "public/out/clu.js"
